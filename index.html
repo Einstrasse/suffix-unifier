@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+	<head>
+		<title>종결어미 통일기(suffix-unifier)</title>
+		<meta charset="utf-8">
+		<style>
+			textarea {
+				width: 80%;
+				height: 300px;
+				border: 1px solid gray;
+			}
+		</style>
+	</head>
+	<body>
+		입력<br>
+		<textarea id="input"></textarea>
+		<br><hr>
+		<button onclick="process()">
+			Action
+		</button>
+		<br><hr>
+		출력<br>
+		<textarea id="output"></textarea>
+		<hr>로그<br>
+		<textarea id="log"></textarea>
+		<script>
+			var mapper = {
+				'보겠다.': '보겠습니다.',
+				'뜻이다.': '뜻입니다.',
+				'필요하다.': '필요합니다.',
+				'것이다.': '것입니다.',
+				'한다.': '합니다.',
+				'하자': '합시다.',
+				'이다.': '입니다.',
+				'왔었다.': '왔었습니다.',
+				'된다.': '됩니다.',
+				'결정한다.': '결정합니다.',
+				'하자.': '합시다.'
+			}
+			var transform = function(pre) {
+				console.log('"' + pre + '"');
+				console.log(typeof mapper[pre])
+				if (typeof mapper[pre] === 'string') {
+					return mapper[pre];
+				} else {
+					return false;
+				}
+			}
+			var process = function() {
+				var input_val = document.getElementById("input").value;
+				var input_lines = input_val.split('\n');
+				var output_lines = [];
+				var log_messages = [];
+				input_lines.map(function(item) {
+					var last_index = item.lastIndexOf(' ');
+					if (last_index != -1) {
+						var prefix = item.slice(0, last_index+1);
+						var suffix = item.slice(last_index+1);
+						var changed_suffix = transform(suffix);
+						if (changed_suffix) {
+							output_lines.push(prefix + changed_suffix);
+						} else {
+							console.log('undefined suffix:', suffix);
+							log_messages.push('undefined suffix: ' + suffix);
+						}
+					} else {
+						output_lines.push(item);
+					}
+				});
+				
+				document.getElementById("output").value = output_lines.join('\n');
+				document.getElementById("log").value = log_messages.join('\n');
+			}
+		</script>
+	</body>
+</html>
